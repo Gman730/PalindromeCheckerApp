@@ -1,14 +1,23 @@
 import java.util.*;
 
-// Strategy Interface
-interface PalindromeStrategy {
-    boolean checkPalindrome(String word);
-}
+public class PalindromePerformance {
 
-// Stack Strategy
-class StackStrategy implements PalindromeStrategy {
+    // Two Pointer Method
+    static boolean twoPointer(String word) {
+        int start = 0;
+        int end = word.length() - 1;
 
-    public boolean checkPalindrome(String word) {
+        while(start < end) {
+            if(word.charAt(start) != word.charAt(end))
+                return false;
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    // Stack Method
+    static boolean stackMethod(String word) {
         Stack<Character> stack = new Stack<>();
 
         for(char c : word.toCharArray())
@@ -21,12 +30,9 @@ class StackStrategy implements PalindromeStrategy {
 
         return true;
     }
-}
 
-// Deque Strategy
-class DequeStrategy implements PalindromeStrategy {
-
-    public boolean checkPalindrome(String word) {
+    // Deque Method
+    static boolean dequeMethod(String word) {
 
         Deque<Character> deque = new ArrayDeque<>();
 
@@ -40,84 +46,39 @@ class DequeStrategy implements PalindromeStrategy {
 
         return true;
     }
-}
-
-// Two Pointer Strategy
-class TwoPointerStrategy implements PalindromeStrategy {
-
-    public boolean checkPalindrome(String word) {
-
-        int start = 0;
-        int end = word.length() - 1;
-
-        while(start < end) {
-            if(word.charAt(start) != word.charAt(end))
-                return false;
-
-            start++;
-            end--;
-        }
-
-        return true;
-    }
-}
-
-// Context Class
-class PalindromeContext {
-
-    private PalindromeStrategy strategy;
-
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean execute(String word) {
-        return strategy.checkPalindrome(word);
-    }
-}
-
-// Main Application
-public class PalindromeApp {
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Palindrome Checker - Strategy Pattern");
-        System.out.println("1. Stack Strategy");
-        System.out.println("2. Deque Strategy");
-        System.out.println("3. Two Pointer Strategy");
-
-        System.out.print("Choose strategy: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-
-        System.out.print("Enter string: ");
+        System.out.print("Enter a string: ");
         String word = sc.nextLine();
 
-        PalindromeContext context = new PalindromeContext();
+        // Two Pointer Performance
+        long start1 = System.nanoTime();
+        boolean result1 = twoPointer(word);
+        long end1 = System.nanoTime();
 
-        switch(choice) {
-            case 1:
-                context.setStrategy(new StackStrategy());
-                break;
-            case 2:
-                context.setStrategy(new DequeStrategy());
-                break;
-            case 3:
-                context.setStrategy(new TwoPointerStrategy());
-                break;
-            default:
-                System.out.println("Invalid choice");
-                return;
-        }
+        // Stack Performance
+        long start2 = System.nanoTime();
+        boolean result2 = stackMethod(word);
+        long end2 = System.nanoTime();
 
-        boolean result = context.execute(word);
+        // Deque Performance
+        long start3 = System.nanoTime();
+        boolean result3 = dequeMethod(word);
+        long end3 = System.nanoTime();
 
-        if(result)
-            System.out.println("Palindrome");
-        else
-            System.out.println("Not Palindrome");
+        System.out.println("\nResults:");
+
+        System.out.println("Two Pointer: " + result1 + 
+                " | Time: " + (end1 - start1) + " ns");
+
+        System.out.println("Stack: " + result2 + 
+                " | Time: " + (end2 - start2) + " ns");
+
+        System.out.println("Deque: " + result3 + 
+                " | Time: " + (end3 - start3) + " ns");
 
         sc.close();
     }
